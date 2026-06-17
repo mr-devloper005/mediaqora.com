@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Bookmark, Building2, Camera, CheckCircle2, Download, ExternalLink, FileText, Globe2, Mail, MapPin, MessageCircle, Phone, Tag, UserRound } from 'lucide-react'
+import { ArrowLeft, Bookmark, Building2, Camera, CheckCircle2, Download, ExternalLink, FileText, Globe2, Mail, MapPin, MessageCircle, Newspaper, Phone, Tag, UserRound } from 'lucide-react'
 import { buildPostMetadata, buildTaskMetadata } from '@/lib/seo'
 import { buildPostUrl, fetchArticleComments, fetchTaskPostBySlug, fetchTaskPosts } from '@/lib/task-data'
 import { getTaskConfig, SITE_CONFIG, type TaskKey } from '@/lib/site-config'
@@ -133,6 +133,7 @@ function BackLink({ task }: { task: TaskKey }) {
 }
 
 function ArticleDetail({ task, post, related, comments }: { task: TaskKey; post: SitePost; related: SitePost[]; comments: Array<{ id: string; name: string; comment: string; createdAt: string }> }) {
+  if (task === 'mediaDistribution') return <MediaDistributionDetail post={post} related={related} comments={comments} />
   const images = getImages(post)
   const published = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''
   return (
@@ -164,6 +165,96 @@ function ArticleDetail({ task, post, related, comments }: { task: TaskKey; post:
         <div className="border-t-4 border-[#c92f2f] pt-5">
           <RelatedPanel task={task} post={post} related={related} />
         </div>
+      </div>
+    </section>
+  )
+}
+
+function MediaDistributionDetail({ post, related, comments }: { post: SitePost; related: SitePost[]; comments: Array<{ id: string; name: string; comment: string; createdAt: string }> }) {
+  const images = getImages(post)
+  const category = categoryOf(post, 'Media campaign')
+  const publisher = getField(post, ['publisher', 'brand', 'company', 'source']) || SITE_CONFIG.name
+  const website = getField(post, ['website', 'url', 'sourceUrl', 'link'])
+  const email = getField(post, ['email', 'contactEmail'])
+  const metrics = [
+    ['Estimated reach', '248K'],
+    ['Publisher pickup', '42'],
+    ['Engagement signal', '14.8%'],
+    ['Distribution status', 'Published'],
+  ]
+
+  return (
+    <section className="media-shell">
+      <header className="border-b border-white/10">
+        <div className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+          <BackLink task="mediaDistribution" />
+          <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
+            <div>
+              <p className="media-eyebrow">{category}</p>
+              <h1 className="mt-5 max-w-5xl text-5xl font-black leading-[.96] tracking-[-.05em] text-white sm:text-7xl">{post.title}</h1>
+              <div className="mt-7 flex flex-wrap gap-3 text-xs font-black uppercase tracking-[.12em] text-white/66">
+                <span className="rounded-full bg-white/[.07] px-4 py-2">Publisher: {publisher}</span>
+                <span className="rounded-full bg-[var(--slot4-accent)] px-4 py-2 text-[#04100f]">Newswire ready</span>
+              </div>
+            </div>
+            <div className="media-card rounded-3xl p-5">
+              <p className="media-eyebrow">Distribution metrics</p>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                {metrics.map(([label, value]) => (
+                  <div key={label} className="rounded-2xl bg-white/[.05] p-4">
+                    <p className="text-2xl font-black text-white">{value}</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-white/48">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {images[0] ? (
+        <figure className="mx-auto max-w-[1200px] px-4 pt-8 sm:px-6 lg:px-8">
+          <div className="overflow-hidden rounded-3xl border border-white/12 bg-black">
+            <img src={images[0]} alt="" className="max-h-[640px] w-full object-cover transition duration-700 hover:scale-[1.015]" />
+          </div>
+        </figure>
+      ) : null}
+
+      <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,760px)_340px] lg:px-8 lg:py-14">
+        <article className="media-card min-w-0 rounded-3xl p-6 sm:p-8">
+          <div className="mb-8 grid gap-4 sm:grid-cols-3">
+            {['Press release content', 'Media reach information', 'Sharing tools'].map((label, index) => (
+              <div key={label} className="rounded-2xl bg-white/[.05] p-4">
+                <CheckCircle2 className="h-5 w-5 text-[var(--slot4-accent)]" />
+                <p className="mt-3 text-sm font-black text-white">{label}</p>
+                <p className="mt-1 text-xs leading-5 text-white/48">Step {index + 1}</p>
+              </div>
+            ))}
+          </div>
+          <BodyContent post={post} />
+          <div className="mt-8 flex flex-wrap gap-3">
+            {website ? <Link href={website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[var(--slot4-accent)] px-5 py-3 text-sm font-black text-[#04100f]">Open source <ExternalLink className="h-4 w-4" /></Link> : null}
+            {email ? <a href={`mailto:${email}`} className="inline-flex items-center gap-2 rounded-full border border-white/16 px-5 py-3 text-sm font-black text-white">Contact publisher <Mail className="h-4 w-4" /></a> : null}
+            <Link href="/create" className="inline-flex items-center gap-2 rounded-full border border-white/16 px-5 py-3 text-sm font-black text-white">Create related campaign</Link>
+          </div>
+          <EditableComments slug={post.slug} comments={comments} />
+        </article>
+        <aside className="space-y-5">
+          <div className="media-card rounded-3xl p-5">
+            <p className="media-eyebrow">Brand profile</p>
+            <h2 className="mt-4 text-2xl font-black text-white">{publisher}</h2>
+            <p className="mt-3 text-sm leading-7 text-white/58">Publisher information, source context, and media campaign ownership stay visible beside the release content.</p>
+          </div>
+          <div className="media-card rounded-3xl p-5">
+            <p className="media-eyebrow">Media reach</p>
+            <div className="mt-5 grid gap-3 text-sm font-bold text-white/68">
+              <p className="inline-flex items-center gap-2"><Globe2 className="h-4 w-4 text-[var(--slot4-accent)]" /> Global search visibility</p>
+              <p className="inline-flex items-center gap-2"><Newspaper className="h-4 w-4 text-[var(--slot4-accent)]" /> Publisher archive inclusion</p>
+              <p className="inline-flex items-center gap-2"><Tag className="h-4 w-4 text-[var(--slot4-accent)]" /> Category: {category}</p>
+            </div>
+          </div>
+          <RelatedPanel task="mediaDistribution" post={post} related={related} />
+        </aside>
       </div>
     </section>
   )
@@ -397,26 +488,27 @@ function BadgeLine({ label, value }: { label: string; value: string }) {
 
 function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey; post: SitePost; related: SitePost[]; compact?: boolean }) {
   const taskConfig = getTaskConfig(task)
+  const mediaMode = task === 'mediaDistribution'
   return (
     <aside className="min-w-0 space-y-5">
       {!compact ? (
-        <div className="border-b border-black/20 bg-white p-5">
-          <p className="text-xs font-black uppercase tracking-[0.22em] opacity-55">About this post</p>
-          <div className="mt-4 grid gap-3 text-sm font-bold opacity-75">
-            <p className="inline-flex items-center gap-2"><Tag className="h-4 w-4" /> Task: {taskConfig?.label || task}</p>
-            <p className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> Site: {SITE_CONFIG.name}</p>
-            {post.publishedAt ? <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p> : null}
+        <div className={mediaMode ? 'media-card rounded-3xl p-5 text-white' : 'border-b border-black/20 bg-white p-5'}>
+          <p className={mediaMode ? 'media-eyebrow' : 'text-xs font-black uppercase tracking-[0.22em] opacity-55'}>About this post</p>
+          <div className={mediaMode ? 'mt-4 grid gap-3 text-sm font-bold text-white/72' : 'mt-4 grid gap-3 text-sm font-bold opacity-75'}>
+            <p className="inline-flex items-center gap-2"><Tag className={mediaMode ? 'h-4 w-4 text-[var(--slot4-accent)]' : 'h-4 w-4'} /> Task: {taskConfig?.label || task}</p>
+            <p className="inline-flex items-center gap-2"><CheckCircle2 className={mediaMode ? 'h-4 w-4 text-[var(--slot4-accent)]' : 'h-4 w-4'} /> Site: {SITE_CONFIG.name}</p>
+            {!mediaMode && post.publishedAt ? <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p> : null}
           </div>
         </div>
       ) : null}
       {related.length ? (
-        <div className="border-b border-black/20 bg-white p-5">
+        <div className={mediaMode ? 'media-card rounded-3xl p-5 text-white' : 'border-b border-black/20 bg-white p-5'}>
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-black tracking-[-0.04em]">More like this</h2>
-            <Link href={taskConfig?.route || '/'} className="text-xs font-black uppercase tracking-[0.16em] opacity-55">View all</Link>
+            <Link href={taskConfig?.route || '/'} className={mediaMode ? 'text-xs font-black uppercase tracking-[0.16em] text-[var(--slot4-accent)]' : 'text-xs font-black uppercase tracking-[0.16em] opacity-55'}>View all</Link>
           </div>
           <div className="mt-5 grid gap-3">
-            {related.map((item) => <RelatedCard key={item.id || item.slug} task={task} post={item} />)}
+            {related.map((item) => <RelatedCard key={item.id || item.slug} task={task} post={item} mediaMode={mediaMode} />)}
           </div>
         </div>
       ) : null}
@@ -424,14 +516,14 @@ function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey;
   )
 }
 
-function RelatedCard({ task, post }: { task: TaskKey; post: SitePost }) {
+function RelatedCard({ task, post, mediaMode = false }: { task: TaskKey; post: SitePost; mediaMode?: boolean }) {
   const image = getImages(post)[0]
   return (
-    <Link href={buildPostUrl(task, post.slug)} className="group flex gap-3 border-t border-black/15 py-3 transition hover:text-[#c92f2f]">
-      {image && task !== 'sbm' ? <img src={image} alt="" className="h-20 w-20 shrink-0 object-cover" /> : <div className="flex h-20 w-20 shrink-0 items-center justify-center bg-black text-white"><FileText className="h-6 w-6" /></div>}
+    <Link href={buildPostUrl(task, post.slug)} className={mediaMode ? 'group flex gap-3 border-t border-white/12 py-3 text-white transition hover:text-[var(--slot4-accent)]' : 'group flex gap-3 border-t border-black/15 py-3 transition hover:text-[#c92f2f]'}>
+      {image && task !== 'sbm' ? <img src={image} alt="" className="h-20 w-20 shrink-0 object-cover" /> : <div className={mediaMode ? 'flex h-20 w-20 shrink-0 items-center justify-center bg-white/[.06] text-white' : 'flex h-20 w-20 shrink-0 items-center justify-center bg-black text-white'}><FileText className="h-6 w-6" /></div>}
       <div className="min-w-0">
         <h3 className="line-clamp-3 text-sm font-black leading-tight tracking-[-0.03em]">{post.title}</h3>
-        <p className="mt-2 line-clamp-2 text-xs leading-5 opacity-60">{summaryText(post)}</p>
+        <p className={mediaMode ? 'mt-2 line-clamp-2 text-xs leading-5 text-white/54' : 'mt-2 line-clamp-2 text-xs leading-5 opacity-60'}>{summaryText(post)}</p>
       </div>
     </Link>
   )
