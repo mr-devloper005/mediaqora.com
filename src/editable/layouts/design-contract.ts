@@ -1,23 +1,23 @@
 import type { CSSProperties } from 'react'
 
 export const editableRootStyle = {
-  '--slot4-page-bg': '#f7f4ef',
-  '--slot4-page-text': '#111111',
-  '--slot4-panel-bg': '#efeae3',
-  '--slot4-surface-bg': '#fffdfa',
-  '--slot4-muted-text': '#514e49',
-  '--slot4-soft-muted-text': '#77716a',
-  '--slot4-accent': '#c92f2f',
-  '--slot4-accent-fill': '#c92f2f',
-  '--slot4-accent-soft': '#f3d8d3',
-  '--slot4-dark-bg': '#111111',
+  '--slot4-page-bg': '#061016',
+  '--slot4-page-text': '#eef7f6',
+  '--slot4-panel-bg': '#0c1b24',
+  '--slot4-surface-bg': '#101a22',
+  '--slot4-muted-text': '#a8b7bd',
+  '--slot4-soft-muted-text': '#74858d',
+  '--slot4-accent': '#27d3b2',
+  '--slot4-accent-fill': '#27d3b2',
+  '--slot4-accent-soft': '#143d3b',
+  '--slot4-dark-bg': '#05090e',
   '--slot4-dark-text': '#ffffff',
-  '--slot4-media-bg': '#e4e0da',
-  '--slot4-cream': '#f7f4ef',
-  '--slot4-warm': '#fffdfa',
-  '--slot4-lavender': '#c92f2f',
-  '--slot4-gray': '#ece9e4',
-  '--slot4-body-gradient': 'linear-gradient(180deg, #f7f4ef 0%, #fffdfa 52%, #eeeae4 100%)',
+  '--slot4-media-bg': '#162631',
+  '--slot4-cream': '#071219',
+  '--slot4-warm': '#101a22',
+  '--slot4-lavender': '#2f6fed',
+  '--slot4-gray': '#17232d',
+  '--slot4-body-gradient': 'radial-gradient(circle at 18% 0%, rgba(39, 211, 178, 0.16), transparent 30%), radial-gradient(circle at 86% 18%, rgba(47, 111, 237, 0.18), transparent 28%), linear-gradient(180deg, #061016 0%, #08141d 52%, #05090e 100%)',
 } as CSSProperties
 
 export const editablePalette = {
@@ -50,7 +50,7 @@ export const editablePalette = {
 export const editableDesignContract = {
   shell: {
     page: `min-h-screen ${editablePalette.pageBg} ${editablePalette.pageText}`,
-    section: 'mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10',
+    section: 'mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8',
     sectionY: 'py-12 sm:py-16 lg:py-20',
   },
   layout: {
@@ -71,9 +71,9 @@ export const editableDesignContract = {
     dark: `${editablePalette.darkBg} ${editablePalette.darkText}`,
   },
   button: {
-    primary: `inline-flex items-center justify-center gap-2 bg-[var(--slot4-dark-bg)] px-7 py-3.5 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-[var(--slot4-accent-fill)]`,
-    secondary: `inline-flex items-center justify-center gap-2 border border-black/30 bg-transparent px-7 py-3.5 text-xs font-black uppercase tracking-[0.12em] text-black transition hover:bg-black hover:text-white`,
-    accent: `inline-flex items-center justify-center gap-2 bg-[var(--slot4-accent-fill)] px-7 py-3.5 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-black`,
+    primary: `inline-flex items-center justify-center gap-2 rounded-full bg-[var(--slot4-accent-fill)] px-7 py-3.5 text-xs font-black uppercase tracking-[0.12em] text-[#04100f] transition hover:-translate-y-0.5 hover:bg-white`,
+    secondary: `inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-7 py-3.5 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:-translate-y-0.5 hover:border-[var(--slot4-accent)] hover:text-[var(--slot4-accent)]`,
+    accent: `inline-flex items-center justify-center gap-2 rounded-full bg-[var(--slot4-accent-fill)] px-7 py-3.5 text-xs font-black uppercase tracking-[0.12em] text-[#04100f] transition hover:-translate-y-0.5 hover:bg-white`,
   },
   media: {
     frame: `relative overflow-hidden ${editablePalette.mediaBg}`,
@@ -87,7 +87,7 @@ export const editableDesignContract = {
 
 export const aiLayoutRules = [
   'All visible layout decisions belong inside src/editable; keep data, SEO, API, and route logic untouched.',
-  'Use a publication-style white masthead, black category navigation, red editorial accents, and sharp image-led grids.',
+  'Use a premium dark media-platform interface with teal action accents, balanced containers, and restrained enterprise spacing.',
   'Keep dynamic post fetching intact and never replace backend posts with mock arrays.',
   'Use postHref() for all post links so route aliases and task-specific detail pages remain functional.',
   'Prioritize readable desktop and mobile layouts with broad story columns and a focused long-form article measure.',
